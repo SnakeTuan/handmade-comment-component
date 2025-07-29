@@ -12,12 +12,7 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+
 
 body {
   background: var(--background);
@@ -62,9 +57,4 @@ body {
   z-index: 1;
 }
 
-/* Dark mode for vertical lines */
-@media (prefers-color-scheme: dark) {
-  .comment-item:has(ul) > .comment::before {
-    background: var(--line-color-dark);
-  }
-}
+
