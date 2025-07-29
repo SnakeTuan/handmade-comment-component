@@ -45,40 +45,42 @@ export default function Comment({ comment, onLike, onReply, isReply }: CommentPr
 
       {/* Comment Content */}
       <div className="comment-content flex-1 min-w-0">
-        {/* Author and Timestamp Header */}
-        <header className="comment-header flex items-center gap-2 mb-3">
-          <h3 className="comment-author font-semibold text-gray-900 text-sm">
-            {comment.author.name}
-          </h3>
-          {comment.author.username && (
-            <span className="comment-username text-sm text-gray-500 font-medium">
-              @{comment.author.username}
-            </span>
-          )}
-          <span className="comment-separator text-gray-300">•</span>
-          <time 
-            className="comment-timestamp text-sm text-gray-500"
-            dateTime={comment.timestamp.toISOString()}
-            title={comment.timestamp.toLocaleString()}
-            suppressHydrationWarning={true}
-          >
-            {formatDistanceToNow(comment.timestamp, { addSuffix: true })}
-          </time>
-        </header>
+        <div className="bg-gray-100 rounded-xl p-4">
+          {/* Author and Timestamp Header */}
+          <header className="comment-header flex items-center gap-2 mb-3">
+            <h3 className="comment-author font-semibold text-gray-900 text-sm">
+              {comment.author.name}
+            </h3>
+            {comment.author.username && (
+              <span className="comment-username text-sm text-gray-500 font-medium">
+                @{comment.author.username}
+              </span>
+            )}
+            <span className="comment-separator text-gray-300">•</span>
+            <time 
+              className="comment-timestamp text-sm text-gray-500"
+              dateTime={comment.timestamp.toISOString()}
+              title={comment.timestamp.toLocaleString()}
+              suppressHydrationWarning={true}
+            >
+              {formatDistanceToNow(comment.timestamp, { addSuffix: true })}
+            </time>
+          </header>
 
-        {/* Comment Text */}
-        <div 
-          className={`comment-text mb-4 ${
-            comment.isEmojiOnly 
-              ? 'text-3xl leading-relaxed py-1' 
-              : 'text-gray-800 leading-relaxed text-[15px]'
-          }`}
-        >
-          <p className="break-words">{comment.content}</p>
+          {/* Comment Text */}
+          <div 
+            className={`comment-text ${
+              comment.isEmojiOnly 
+                ? 'text-3xl leading-relaxed py-1' 
+                : 'text-gray-800 leading-relaxed text-[15px]'
+            }`}
+          >
+            <p className="break-words">{comment.content}</p>
+          </div>
         </div>
 
         {/* Action Buttons */}
-        <footer className="comment-actions flex items-center gap-1">
+        <footer className="comment-actions flex items-center gap-1 mt-2">
           <button
             onClick={handleLike}
             aria-label={comment.isLiked ? 'Unlike comment' : 'Like comment'}
