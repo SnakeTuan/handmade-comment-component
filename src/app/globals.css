@@ -28,7 +28,7 @@ body {
   --line-width: 2px;
   --line-color: #e5e7eb;
   --line-color-dark: #374151;
-  --connector-radius: 8px;
+  --connector-radius: 16px; /* Increased from 8px for a smoother curve */
   margin: 0;
   padding: 0;
   list-style: none;
