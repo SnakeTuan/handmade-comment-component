@@ -28,6 +28,12 @@ body {
 /* Comment Component Styles */
 .comment-list {
   --comment-indent: 3rem;
+  --avatar-size: 2.5rem; /* 40px - keep consistent */
+  --avatar-center: calc(1.5rem + 1.25rem); /* padding + half avatar = 2.75rem */
+  --line-width: 2px;
+  --line-color: #e5e7eb;
+  --line-color-dark: #374151;
+  --connector-radius: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -42,4 +48,23 @@ body {
 /* Apply indentation to comment content, not list structure */
 .comment[style*="--depth"] {
   margin-left: calc(var(--depth, 0) * var(--comment-indent));
+}
+
+/* Vertical continuation lines for parent comments with replies */
+.comment-item:has(ul) > .comment::before {
+  content: '';
+  position: absolute;
+  left: var(--avatar-center);
+  top: calc(1.5rem + var(--avatar-size)); /* Start below parent avatar */
+  bottom: 0; /* Extend to end of parent comment only */
+  width: var(--line-width);
+  background: var(--line-color);
+  z-index: 1;
+}
+
+/* Dark mode for vertical lines */
+@media (prefers-color-scheme: dark) {
+  .comment-item:has(ul) > .comment::before {
+    background: var(--line-color-dark);
+  }
 }
