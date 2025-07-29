@@ -5,9 +5,10 @@ interface CommentProps {
   comment: CommentType;
   onLike?: (commentId: string) => void;
   onReply?: (commentId: string) => void;
+  isReply?: boolean;
 }
 
-export default function Comment({ comment, onLike, onReply }: CommentProps) {
+export default function Comment({ comment, onLike, onReply, isReply }: CommentProps) {
   const handleLike = () => {
     onLike?.(comment.id);
   };
@@ -16,9 +17,20 @@ export default function Comment({ comment, onLike, onReply }: CommentProps) {
     onReply?.(comment.id);
   };
 
+  const articleClasses = [
+    "comment",
+    "relative",
+    "flex",
+    "gap-4",
+    "p-6",
+    "hover:bg-gray-50/50",
+    "transition-colors",
+    isReply ? "is-reply" : ""
+  ].filter(Boolean).join(" ");
+
   return (
     <article 
-      className="comment relative flex gap-4 p-6 hover:bg-gray-50/50 transition-colors"
+      className={articleClasses}
       style={{ '--depth': comment.depth || 0 } as React.CSSProperties}
     >
       {/* Avatar */}

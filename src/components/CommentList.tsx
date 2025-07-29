@@ -20,9 +20,10 @@ export default function CommentList({
     <ul className="comment-list space-y-0">
       {comments.map((comment, index) => {
         const isLastComment = index === comments.length - 1;
+        const isReply = (comment.depth || 0) > 0;
         const liClasses = [
           "comment-item",
-          comment.depth > 0 ? "is-reply" : "",
+          isReply ? "is-reply" : "",
           !isLastComment ? "is-not-last-child" : ""
         ].filter(Boolean).join(" ");
 
@@ -37,6 +38,7 @@ export default function CommentList({
               comment={comment}
               onLike={onLike}
               onReply={onReply}
+              isReply={isReply}
             />
             
             {/* Render nested replies if they exist and we haven't exceeded max depth */}
