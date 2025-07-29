@@ -24,8 +24,8 @@ body {
 .comment-list {
   --comment-indent: 3rem;
   --avatar-size: 2.5rem; /* 40px - keep consistent */
-  --avatar-center: calc(1.5rem + 1.25rem); /* padding + half avatar = 2.75rem */
-  --line-width: 2px;
+  --avatar-center: calc(0.5rem + 1.25rem); /* padding + half avatar */
+  --line-width: 1px;
   --line-color: #e5e7eb;
   --line-color-dark: #374151;
   --connector-radius: 16px; /* Increased from 8px for a smoother curve */
@@ -50,12 +50,12 @@ article.comment.is-reply::after {
   position: absolute;
   z-index: 1;
   top: 0;
-  height: calc(1.5rem + var(--avatar-size) / 2);
+  height: calc(0.5rem + var(--avatar-size) / 2);
   left: calc(var(--avatar-center) - var(--comment-indent));
-  width: calc(var(--comment-indent) - var(--avatar-center) + 1.5rem);
+  width: calc(var(--comment-indent) - var(--avatar-center) + 0.5rem);
   border-bottom: var(--line-width) solid var(--line-color);
   border-left: var(--line-width) solid var(--line-color);
-  border-bottom-left-radius: var(--connector-radius);
+  border-bottom-left-radius: 12px;
 }
 
 .comment-item.is-reply.is-not-last-child::before {
@@ -74,7 +74,7 @@ article.comment.is-reply::after {
   content: '';
   position: absolute;
   left: var(--avatar-center);
-  top: calc(1.5rem + var(--avatar-size)); /* Start below parent avatar */
+  top: calc(1rem + var(--avatar-size)); /* Start below parent avatar */
   bottom: 0; /* Extend to end of parent comment only */
   width: var(--line-width);
   background: var(--line-color);

@@ -22,7 +22,8 @@ export default function Comment({ comment, onLike, onReply, isReply }: CommentPr
     "relative",
     "flex",
     "gap-4",
-    "p-6",
+    "px-2",
+    "py-2",
     "hover:bg-gray-50/50",
     "transition-colors",
     isReply ? "is-reply" : ""

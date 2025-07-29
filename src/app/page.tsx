@@ -32,7 +32,7 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="max-w-4xl mx-auto px-8 py-12">
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <div className="p-6 border-b border-gray-200">
             <h2 className="text-xl font-semibold text-gray-900">
