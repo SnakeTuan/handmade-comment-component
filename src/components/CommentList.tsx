@@ -18,30 +18,39 @@ export default function CommentList({
 
   return (
     <ul className="comment-list space-y-0">
-      {comments.map((comment) => (
-        <li 
-          key={comment.id} 
-          className="comment-item"
-          style={{ '--depth': comment.depth || 0 } as React.CSSProperties}
-        >
-          {/* Render the comment */}
-          <Comment 
-            comment={comment}
-            onLike={onLike}
-            onReply={onReply}
-          />
-          
-          {/* Render nested replies if they exist and we haven't exceeded max depth */}
-          {comment.replies.length > 0 && (comment.depth || 0) < maxDepth && (
-            <CommentList
-              comments={comment.replies}
+      {comments.map((comment, index) => {
+        const isLastComment = index === comments.length - 1;
+        const liClasses = [
+          "comment-item",
+          comment.depth > 0 ? "is-reply" : "",
+          !isLastComment ? "is-not-last-child" : ""
+        ].filter(Boolean).join(" ");
+
+        return (
+          <li 
+            key={comment.id} 
+            className={liClasses}
+            style={{ '--depth': comment.depth || 0 } as React.CSSProperties}
+          >
+            {/* Render the comment */}
+            <Comment 
+              comment={comment}
               onLike={onLike}
               onReply={onReply}
-              maxDepth={maxDepth}
             />
-          )}
-        </li>
-      ))}
+            
+            {/* Render nested replies if they exist and we haven't exceeded max depth */}
+            {comment.replies.length > 0 && (comment.depth || 0) < maxDepth && (
+              <CommentList
+                comments={comment.replies}
+                onLike={onLike}
+                onReply={onReply}
+                maxDepth={maxDepth}
+              />
+            )}
+          </li>
+        );
+      })}
     </ul>
   );
 }

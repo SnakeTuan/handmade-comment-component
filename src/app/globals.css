@@ -45,6 +45,17 @@ body {
   margin-left: calc(var(--depth, 0) * var(--comment-indent));
 }
 
+.comment-item.is-reply.is-not-last-child::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--avatar-center) + (var(--depth) - 1) * var(--comment-indent));
+  top: 0;
+  bottom: 0;
+  width: var(--line-width);
+  background-color: green; /* Green for debugging */
+  z-index: 0;
+}
+
 /* Vertical continuation lines for parent comments with replies */
 .comment-item:has(ul) > .comment::before {
   content: '';
