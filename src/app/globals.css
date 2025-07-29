@@ -24,3 +24,22 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Comment Component Styles */
+.comment-list {
+  --comment-indent: 3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.comment-item {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+/* Apply indentation to comment content, not list structure */
+.comment[style*="--depth"] {
+  margin-left: calc(var(--depth, 0) * var(--comment-indent));
+}

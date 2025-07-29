@@ -18,8 +18,8 @@ export default function Comment({ comment, onLike, onReply }: CommentProps) {
 
   return (
     <article 
-      className="comment-item relative flex gap-4 p-6 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
-      style={{ '--depth': comment.depth } as React.CSSProperties}
+      className="comment relative flex gap-4 p-6 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+      style={{ '--depth': comment.depth || 0 } as React.CSSProperties}
     >
       {/* Avatar */}
       <div className="comment-avatar flex-shrink-0">
