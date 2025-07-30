@@ -69,6 +69,13 @@ article.comment.is-reply::after {
   z-index: 0;
 }
 
+/* Add transition to pseudo-elements for smooth color change */
+article.comment.is-reply::after,
+.comment-item.is-reply.is-not-last-child::before,
+.comment-item:has(ul) > .comment::before {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
 /* Vertical continuation lines for parent comments with replies */
 .comment-item:has(ul) > .comment::before {
   content: '';
@@ -79,6 +86,22 @@ article.comment.is-reply::after {
   width: var(--line-width);
   background: var(--line-color);
   z-index: 1;
+}
+
+/* Highlight lines when hovering over a comment */
+.comment-item:has(ul) > .comment:hover::before /* Vertical line of the hovered parent */
+{
+  background-color: #000000; /* Change to black on hover */
+}
+.comment-item:has(ul) > .comment:hover ~ ul > .comment-item > article.comment.is-reply::after /* Curved line of immediate child */
+{
+  border-color: #000000; /* Change to black on hover */
+}
+
+.comment-item:has(ul) > .comment:hover ~ ul > .comment-item.is-reply.is-not-last-child::before /* Vertical line of immediate child aligning with parent */
+{
+  background-color: #000000; /* Change to black on hover */
+  border-color: #000000; /* Change to black on hover */
 }
 
 
