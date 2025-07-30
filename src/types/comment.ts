@@ -16,6 +16,7 @@ export interface Comment {
   depth?: number; // For CSS depth-based styling
   isEmojiOnly?: boolean; // Special state for emoji-only comments
   parentId?: string; // Reference to parent comment
+  totalReplies?: number; // Total number of replies, including hidden ones
 }
 
 export interface CommentProps {

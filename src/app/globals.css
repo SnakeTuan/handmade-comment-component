@@ -69,10 +69,43 @@ article.comment.is-reply::after {
   z-index: 0;
 }
 
+/* Styles for the "Show More Replies" button */
+.comment-show-more {
+  position: relative;
+  /* The padding and gap should match the .comment article */
+  padding-left: calc(var(--comment-indent) * var(--depth));
+}
+
+.comment-show-more::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--avatar-center) + (var(--depth) - 1) * var(--comment-indent));
+  top: 0;
+  bottom: 0;
+  width: var(--line-width);
+  background-color: var(--line-color);
+  z-index: 0;
+}
+
+.comment-show-more::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  height: calc(1.5rem + var(--avatar-size) / 2);
+  left: calc(var(--avatar-center) - var(--comment-indent));
+  width: calc(var(--comment-indent) - var(--avatar-center) + 1.5rem);
+  border-bottom: var(--line-width) solid var(--line-color);
+  border-left: var(--line-width) solid var(--line-color);
+  border-bottom-left-radius: var(--connector-radius);
+}
+
 /* Add transition to pseudo-elements for smooth color change */
 article.comment.is-reply::after,
 .comment-item.is-reply.is-not-last-child::before,
-.comment-item:has(ul) > .comment::before {
+.comment-item:has(ul) > .comment::before,
+.comment-show-more::before,
+.comment-show-more::after {
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -93,6 +126,7 @@ article.comment.is-reply::after,
 {
   background-color: #000000; /* Change to black on hover */
 }
+
 .comment-item:has(ul) > .comment:hover ~ ul > .comment-item > article.comment.is-reply::after /* Curved line of immediate child */
 {
   border-color: #000000; /* Change to black on hover */
@@ -102,6 +136,13 @@ article.comment.is-reply::after,
 {
   background-color: #000000; /* Change to black on hover */
   border-color: #000000; /* Change to black on hover */
+}
+
+/* Hover effect for the show more replies button */
+.comment-show-more:hover::before,
+.comment-show-more:hover::after {
+  background-color: #000000;
+  border-color: #000000;
 }
 
 

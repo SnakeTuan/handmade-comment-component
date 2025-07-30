@@ -55,6 +55,18 @@ const mockUsers: User[] = [
     name: 'Jordan White',
     username: 'jordanw',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jordan'
+  },
+  {
+    id: '9',
+    name: 'Olivia Brown',
+    username: 'oliviab',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia'
+  },
+  {
+    id: '10',
+    name: 'Noah Davis',
+    username: 'noahd',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Noah'
   }
 ];
 
@@ -67,7 +79,8 @@ const createComment = (
   likes: number = 0,
   isLiked: boolean = false,
   replies: Comment[] = [],
-  parentId?: string
+  parentId?: string,
+  totalReplies?: number // New parameter
 ): Comment => {
   const comment: Comment = {
     id,
@@ -78,13 +91,14 @@ const createComment = (
     isLiked,
     replies,
     parentId,
-    isEmojiOnly: isEmojiOnly(content)
+    isEmojiOnly: isEmojiOnly(content),
+    totalReplies: totalReplies !== undefined ? totalReplies : replies.length // Set totalReplies
   };
 
   // Calculate depth based on nested structure
   const calculateDepth = (comment: Comment, currentDepth = 0): Comment => {
     comment.depth = currentDepth;
-    comment.replies = comment.replies.map(reply => 
+    comment.replies = comment.replies.map(reply =>
       calculateDepth(reply, currentDepth + 1)
     );
     return comment;
@@ -283,13 +297,118 @@ export const mockComments: Comment[] = [
     13,
     false,
     []
+  ),
+  // New comment with many replies to demonstrate "show more"
+  createComment(
+    '6',
+    mockUsers[8],
+    'This is a top-level comment with many replies. We should only show a few initially.',
+    daysAgo(0.5),
+    30,
+    false,
+    [
+      createComment(
+        '6-1',
+        mockUsers[9],
+        'Reply 1 to comment 6.',
+        hoursAgo(10),
+        2,
+        false,
+        [],
+        '6'
+      ),
+      createComment(
+        '6-2',
+        mockUsers[1],
+        'Reply 2 to comment 6.',
+        hoursAgo(9),
+        1,
+        false,
+        [],
+        '6'
+      ),
+      createComment(
+        '6-3',
+        mockUsers[2],
+        'Reply 3 to comment 6.',
+        hoursAgo(8),
+        0,
+        false,
+        [],
+        '6'
+      ),
+      createComment(
+        '6-4',
+        mockUsers[3],
+        'Reply 4 to comment 6. This one is hidden initially.',
+        hoursAgo(7),
+        0,
+        false,
+        [],
+        '6'
+      ),
+      createComment(
+        '6-5',
+        mockUsers[4],
+        'Reply 5 to comment 6. This one is also hidden initially.',
+        hoursAgo(6),
+        0,
+        false,
+        [],
+        '6'
+      )
+    ],
+    undefined,
+    5 // totalReplies is 5, but we'll only show 3 initially in CommentList
+  ),
+  createComment(
+    '7',
+    mockUsers[9],
+    'Another comment with a deep reply chain to test the show more functionality.',
+    daysAgo(0.3),
+    10,
+    false,
+    [
+      createComment(
+        '7-1',
+        mockUsers[0],
+        'First reply to comment 7.',
+        hoursAgo(5),
+        3,
+        false,
+        [
+          createComment(
+            '7-1-1',
+            mockUsers[1],
+            'First reply to 7-1.',
+            hoursAgo(4),
+            1,
+            false,
+            [],
+            '7-1'
+          ),
+          createComment(
+            '7-1-2',
+            mockUsers[2],
+            'Second reply to 7-1. Hidden initially.',
+            hoursAgo(3),
+            0,
+            false,
+            [],
+            '7-1'
+          )
+        ],
+        '7',
+        2 // totalReplies for 7-1 is 2, but we'll only show 1 initially
+      )
+    ]
   )
 ];
 
 // Helper function to flatten comments for easier processing
 export const flattenComments = (comments: Comment[]): Comment[] => {
   const result: Comment[] = [];
-  
+
   const flatten = (commentList: Comment[]) => {
     commentList.forEach(comment => {
       result.push(comment);
@@ -298,7 +417,7 @@ export const flattenComments = (comments: Comment[]): Comment[] => {
       }
     });
   };
-  
+
   flatten(comments);
   return result;
 };

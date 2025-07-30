@@ -1,5 +1,6 @@
 import { Comment as CommentType } from '../types/comment';
 import Comment from './Comment';
+import { useState } from 'react';
 
 interface CommentListProps {
   comments: CommentType[];
@@ -8,12 +9,25 @@ interface CommentListProps {
   maxDepth?: number;
 }
 
-export default function CommentList({ 
-  comments, 
-  onLike, 
-  onReply, 
-  maxDepth = 4 
+const INITIAL_REPLIES_DISPLAY_COUNT = 2;
+
+export default function CommentList({
+  comments,
+  onLike,
+  onReply,
+  maxDepth = 4,
 }: CommentListProps) {
+  const [visibleRepliesMap, setVisibleRepliesMap] = useState<Map<string, number>>(() => new Map());
+
+  const handleShowMoreReplies = (commentId: string) => {
+    setVisibleRepliesMap(prevMap => {
+      const newMap = new Map(prevMap);
+      // Set to a very large number to show all replies
+      newMap.set(commentId, Infinity);
+      return newMap;
+    });
+  };
+
   if (!comments.length) return null;
 
   return (
@@ -27,24 +41,31 @@ export default function CommentList({
           !isLastComment ? "is-not-last-child" : ""
         ].filter(Boolean).join(" ");
 
+        const totalReplies = comment.totalReplies !== undefined ? comment.totalReplies : comment.replies.length;
+        const currentVisibleReplies = visibleRepliesMap.get(comment.id) || INITIAL_REPLIES_DISPLAY_COUNT;
+        const repliesToDisplay = comment.replies.slice(0, currentVisibleReplies);
+        const showMoreRepliesCount = totalReplies - repliesToDisplay.length;
+
         return (
-          <li 
-            key={comment.id} 
+          <li
+            key={comment.id}
             className={liClasses}
             style={{ '--depth': comment.depth || 0 } as React.CSSProperties}
           >
             {/* Render the comment */}
-            <Comment 
+            <Comment
               comment={comment}
               onLike={onLike}
               onReply={onReply}
               isReply={isReply}
+              showMoreRepliesCount={showMoreRepliesCount > 0 ? showMoreRepliesCount : undefined}
+              onShowMoreReplies={handleShowMoreReplies}
             />
-            
+
             {/* Render nested replies if they exist and we haven't exceeded max depth */}
-            {comment.replies.length > 0 && (comment.depth || 0) < maxDepth && (
+            {repliesToDisplay.length > 0 && (comment.depth || 0) < maxDepth && (
               <CommentList
-                comments={comment.replies}
+                comments={repliesToDisplay}
                 onLike={onLike}
                 onReply={onReply}
                 maxDepth={maxDepth}
