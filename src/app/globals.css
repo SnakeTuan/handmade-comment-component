@@ -12,8 +12,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-
-
 body {
   background: var(--background);
   color: var(--foreground);
@@ -23,12 +21,11 @@ body {
 /* Comment Component Styles */
 .comment-list {
   --comment-indent: 3rem;
-  --avatar-size: 2.5rem; /* 40px - keep consistent */
-  --avatar-center: calc(1.5rem + 1.25rem); /* padding + half avatar = 2.75rem */
+  --avatar-size: 2.5rem; /* 40px */
+  --avatar-center: calc(1.5rem + 1.25rem); /* p-6 + half avatar */
   --line-width: 2px;
   --line-color: #e5e7eb;
-  --line-color-dark: #374151;
-  --connector-radius: 16px; /* Increased from 8px for a smoother curve */
+  --connector-radius: 16px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -36,113 +33,87 @@ body {
 
 .comment-item {
   position: relative;
-  margin: 0;
-  padding: 0;
 }
 
-/* Apply indentation to comment content, not list structure */
-.comment[style*="--depth"] {
+/* Indentation for all comments */
+.comment[style*="--depth"], .comment-show-more[style*="--depth"] {
   margin-left: calc(var(--depth, 0) * var(--comment-indent));
 }
 
-article.comment.is-reply::after {
-  content: '';
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  height: calc(1.5rem + var(--avatar-size) / 2);
-  left: calc(var(--avatar-center) - var(--comment-indent));
-  width: calc(var(--comment-indent) - var(--avatar-center) + 1.5rem);
-  border-bottom: var(--line-width) solid var(--line-color);
-  border-left: var(--line-width) solid var(--line-color);
-  border-bottom-left-radius: var(--connector-radius);
-}
-
-.comment-item.is-reply.is-not-last-child::before {
-  content: '';
-  position: absolute;
-  left: calc(var(--avatar-center) + (var(--depth) - 1) * var(--comment-indent));
-  top: 0;
-  bottom: 0;
-  width: var(--line-width);
-  background-color: var(--line-color);
-  z-index: 0;
-}
-
-/* Styles for the "Show More Replies" button */
-.comment-show-more {
-  position: relative;
-  /* The padding and gap should match the .comment article */
-  padding-left: calc(var(--comment-indent) * var(--depth));
-}
-
-.comment-show-more::before {
-  content: '';
-  position: absolute;
-  left: calc(var(--avatar-center) + (var(--depth) - 1) * var(--comment-indent));
-  top: 0;
-  bottom: 0;
-  width: var(--line-width);
-  background-color: var(--line-color);
-  z-index: 0;
-}
-
-.comment-show-more::after {
-  content: '';
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  height: calc(1.5rem + var(--avatar-size) / 2);
-  left: calc(var(--avatar-center) - var(--comment-indent));
-  width: calc(var(--comment-indent) - var(--avatar-center) + 1.5rem);
-  border-bottom: var(--line-width) solid var(--line-color);
-  border-left: var(--line-width) solid var(--line-color);
-  border-bottom-left-radius: var(--connector-radius);
-}
-
-/* Add transition to pseudo-elements for smooth color change */
-article.comment.is-reply::after,
-.comment-item.is-reply.is-not-last-child::before,
-.comment-item:has(ul) > .comment::before,
-.comment-show-more::before,
-.comment-show-more::after {
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-/* Vertical continuation lines for parent comments with replies */
-.comment-item:has(ul) > .comment::before {
+/* Vertical line from parent avatar - ONLY for items with children */
+.comment-item.has-children > .comment::before {
   content: '';
   position: absolute;
   left: var(--avatar-center);
-  top: calc(1.5rem + var(--avatar-size)); /* Start below parent avatar */
-  bottom: 0; /* Extend to end of parent comment only */
+  top: calc(1.5rem + var(--avatar-size));
+  bottom: 0;
   width: var(--line-width);
   background: var(--line-color);
   z-index: 1;
+  transition: background-color 0.3s ease;
 }
 
-/* Highlight lines when hovering over a comment */
-.comment-item:has(ul) > .comment:hover::before /* Vertical line of the hovered parent */
-{
-  background-color: #000000; /* Change to black on hover */
+/* Curved connector for replies */
+.comment.is-reply::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  height: calc(1.5rem + var(--avatar-size) / 2);
+  left: calc(var(--avatar-center) - var(--comment-indent));
+  width: calc(var(--comment-indent) - var(--avatar-center) + 1.5rem);
+  border-bottom: var(--line-width) solid var(--line-color);
+  border-left: var(--line-width) solid var(--line-color);
+  border-bottom-left-radius: var(--connector-radius);
+  transition: border-color 0.3s ease;
 }
 
-.comment-item:has(ul) > .comment:hover ~ ul > .comment-item > article.comment.is-reply::after /* Curved line of immediate child */
-{
-  border-color: #000000; /* Change to black on hover */
+/* Vertical line for replies that are not the last in their list */
+.comment-list.is-nested > .comment-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: calc(var(--avatar-center) + (var(--depth) - 1) * var(--comment-indent));
+    top: 0;
+    bottom: 0;
+    width: var(--line-width);
+    background-color: var(--line-color);
+    z-index: 0;
+    transition: background-color 0.3s ease;
 }
 
-.comment-item:has(ul) > .comment:hover ~ ul > .comment-item.is-reply.is-not-last-child::before /* Vertical line of immediate child aligning with parent */
-{
-  background-color: #000000; /* Change to black on hover */
-  border-color: #000000; /* Change to black on hover */
+/* Lines for the "Show More" button */
+.comment-show-more.is-reply::after { /* Curved part */
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  height: calc(1.5rem + var(--avatar-size) / 2);
+  left: calc(var(--avatar-center) - var(--comment-indent) + 3rem); /* Adjusted for padding */
+  width: calc(var(--comment-indent) - var(--avatar-center) + 1.5rem);
+  border-bottom: var(--line-width) solid var(--line-color);
+  border-left: var(--line-width) solid var(--line-color);
+  border-bottom-left-radius: var(--connector-radius);
+  transition: border-color 0.3s ease;
 }
 
-/* Hover effect for the show more replies button */
-.comment-show-more:hover::before,
-.comment-show-more:hover::after {
+/* --- HOVER EFFECTS --- */
+
+/* Parent hover highlights its own vertical line */
+.comment-item.has-children > .comment:hover::before {
   background-color: #000000;
+}
+
+/* Parent hover highlights the vertical lines of its direct children */
+.comment-item > .comment:hover ~ .comment-list > .comment-item::before {
+  background-color: #000000;
+}
+
+/* Parent hover highlights the curved line of its direct children */
+.comment-item > .comment:hover ~ .comment-list .comment.is-reply::after {
   border-color: #000000;
 }
 
-
+/* Parent hover highlights the lines for the "show more" button */
+.comment-item > .comment:hover ~ .comment-list .comment-show-more.is-reply::after {
+  border-color: #000000;
+}
